@@ -1,0 +1,52 @@
+
+import os
+import logging
+from telegram import Update
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    ContextTypes
+)
+
+logging.basicConfig(level=logging.INFO)
+
+TOKEN = os.getenv("BOT_TOKEN")
+
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Привет! Я SamostGram.\n\n"
+        "Твой персональный Telegram-помощник.\n\n"
+        "Доступные команды:\n"
+        "/start — запуск\n"
+        "/help — помощь\n"
+        "/ping — проверка работы"
+    )
+
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "SamostGram находится в разработке.\n"
+        "Скоро здесь появятся новые функции!"
+    )
+
+
+async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("SamostGram работает!")
+
+
+def main():
+    if not TOKEN:
+        raise RuntimeError("Не задан BOT_TOKEN")
+
+    app = Application.builder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("ping", ping))
+
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
